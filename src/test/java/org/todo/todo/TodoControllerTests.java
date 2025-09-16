@@ -139,4 +139,23 @@ public class TodoControllerTests {
                 .andExpect(jsonPath("$.done").value(true));
     }
 
+    @Test
+    void should_response_new_todo_when_update_todo_with_two_ids() throws Exception {
+        Todo todo = todoRepository.save(new Todo(null, "Buy milk", false));
+        Todo todo2 = todoRepository.save(new Todo(null, "Buy bread", true));
+        MockHttpServletRequestBuilder request = put("/todos/" + todo.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(String.format("""
+                        {
+                          "text": "Buy banana",
+                          "done": true,
+                          "id": "%s"
+                        }
+                        """, todo2.getId()));
+        mockMvc.perform(request)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(todo.getId()))
+                .andExpect(jsonPath("$.text").value("Buy banana"))
+                .andExpect(jsonPath("$.done").value(true));
+    }
 }

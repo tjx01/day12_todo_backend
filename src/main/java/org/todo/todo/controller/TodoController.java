@@ -28,6 +28,11 @@ public class TodoController {
         return todoService.create(todo);
     }
 
+    @GetMapping("/{id}")
+    Todo getById(@PathVariable String id) {
+        return todoService.getById(id);
+    }
+
     @PutMapping("/{id}")
     Todo update(@PathVariable String id, @RequestBody Todo todo) {
         return todoService.update(id, todo);
