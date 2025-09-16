@@ -3,6 +3,8 @@ package org.todo.todo.service;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+import org.todo.todo.dto.TodoResponse;
+import org.todo.todo.dto.mapper.TodoMapper;
 import org.todo.todo.entity.Todo;
 import org.todo.todo.repository.TodoRepository;
 
@@ -16,19 +18,19 @@ public class TodoService {
         this.todoRepository = todoRepository;
     }
 
-    public List<Todo> index() {
-        return todoRepository.findAll();
+    public List<TodoResponse> index() {
+        return TodoMapper.toResponseList(todoRepository.findAll());
     }
 
-    public Todo create(Todo todo) {
+    public TodoResponse create(Todo todo) {
         if (todo.getText() == null || todo.getText().isEmpty()) {
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Todo text cannot be empty");
         }
         todo.setId(null);
-        return todoRepository.save(todo);
+        return TodoMapper.toResponse(todoRepository.save(todo));
     }
 
-    public Todo update(String id, Todo todo) {
+    public TodoResponse update(String id, Todo todo) {
         if (todo.getText() != null && todo.getText().isEmpty()) {
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Todo text cannot be empty");
         }
@@ -40,12 +42,12 @@ public class TodoService {
         }
         found.setDone(todo.isDone());
 
-        return todoRepository.save(found);
+        return TodoMapper.toResponse(todoRepository.save(found));
     }
 
-    public Todo getById(String id) {
-        return todoRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Todo not found"));
+    public TodoResponse getById(String id) {
+        return TodoMapper.toResponse(todoRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Todo not found")));
     }
 
     public void delete(String id) {
