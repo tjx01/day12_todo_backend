@@ -47,4 +47,10 @@ public class TodoService {
         return todoRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Todo not found"));
     }
+
+    public void delete(String id) {
+        Todo found = todoRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Todo not found"));
+        todoRepository.delete(found);
+    }
 }
