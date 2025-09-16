@@ -75,4 +75,17 @@ public class TodoControllerTests {
                 .andExpect(jsonPath("$.text").value("Buy milk"))
                 .andExpect(jsonPath("$.done").value(false));
     }
+
+    @Test
+    void should_response_422_when_create_todo_without_text() throws Exception {
+        MockHttpServletRequestBuilder request = post("/todos")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
+                        {
+                            "done": false
+                        }
+                        """);
+        mockMvc.perform(request)
+                .andExpect(status().isUnprocessableEntity());
+    }
 }
