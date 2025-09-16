@@ -1,5 +1,6 @@
 package org.todo.todo;
 
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -101,6 +102,23 @@ public class TodoControllerTests {
                         """);
         mockMvc.perform(request)
                 .andExpect(status().isUnprocessableEntity());
+    }
+
+    @Test
+    void should_Ignore_client_sent_id_and_generate_a_new_id() throws Exception {
+        MockHttpServletRequestBuilder request = post("/todos")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
+                        {
+                            "id": "client-sent-id",
+                            "text": "Buy milk",
+                            "done": false
+                        }
+                        """);
+        mockMvc.perform(request)
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id").exists())
+                .andExpect(jsonPath("$.id").value(Matchers.not("client-sent-id")));
     }
 
 }

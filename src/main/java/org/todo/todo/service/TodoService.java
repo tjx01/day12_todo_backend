@@ -24,6 +24,7 @@ public class TodoService {
         if (todo.getText() == null || todo.getText().isEmpty()) {
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Todo text cannot be empty");
         }
+        todo.setId(null);
         return todoRepository.save(todo);
     }
 }
