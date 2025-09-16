@@ -1,6 +1,5 @@
 package org.todo.todo;
 
-import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +11,7 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import org.todo.todo.entity.Todo;
 import org.todo.todo.repository.TodoRepository;
 
+import static org.hamcrest.Matchers.not;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -117,7 +117,7 @@ public class TodoControllerTests {
         mockMvc.perform(request)
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").exists())
-                .andExpect(jsonPath("$.id").value(Matchers.not("client-sent-id")));
+                .andExpect(jsonPath("$.id").value(not("client-sent-id")));
     }
 
     @Test
@@ -171,5 +171,20 @@ public class TodoControllerTests {
                         """);
         mockMvc.perform(request)
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void should_response_422_when_update_todo_with_text_empty() throws Exception {
+        Todo todo = todoRepository.save(new Todo(null, "Buy milk", false));
+        MockHttpServletRequestBuilder request = put("/todos/" + todo.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
+                        {
+                            "text": "",
+                            "done": true
+                        }
+                        """);
+        mockMvc.perform(request)
+                .andExpect(status().isUnprocessableEntity());
     }
 }

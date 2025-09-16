@@ -29,6 +29,9 @@ public class TodoService {
     }
 
     public Todo update(String id, Todo todo) {
+        if (todo.getText() != null && todo.getText().isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Todo text cannot be empty");
+        }
         Todo found = todoRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Todo not found"));
 
