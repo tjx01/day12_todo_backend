@@ -12,6 +12,7 @@ import org.todo.todo.entity.Todo;
 import org.todo.todo.repository.TodoRepository;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -54,5 +55,24 @@ public class TodoControllerTests {
                 .andExpect(jsonPath("$[0].length()").value(3))
                 .andExpect(jsonPath("$[0].text").value("Buy milk"))
                 .andExpect(jsonPath("$[0].done").value(false));
+    }
+
+    @Test
+    void should_response_201_when_create_todo() throws Exception {
+        MockHttpServletRequestBuilder request = post("/todos")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
+                        {
+                            "text": "Buy milk",
+                            "done": false
+                        }
+                        """);
+
+
+        mockMvc.perform(request)
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id").exists())
+                .andExpect(jsonPath("$.text").value("Buy milk"))
+                .andExpect(jsonPath("$.done").value(false));
     }
 }

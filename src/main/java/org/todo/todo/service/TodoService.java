@@ -1,6 +1,5 @@
 package org.todo.todo.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.todo.todo.entity.Todo;
 import org.todo.todo.repository.TodoRepository;
@@ -17,5 +16,9 @@ public class TodoService {
 
     public List<Todo> index() {
         return todoRepository.findAll();
+    }
+
+    public Todo create(Todo todo) {
+        return todoRepository.save(todo);
     }
 }
