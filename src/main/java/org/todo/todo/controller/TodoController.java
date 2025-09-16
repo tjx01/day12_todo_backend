@@ -2,8 +2,8 @@ package org.todo.todo.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.todo.todo.dto.TodoRequest;
 import org.todo.todo.dto.TodoResponse;
-import org.todo.todo.entity.Todo;
 import org.todo.todo.service.TodoService;
 
 import java.util.List;
@@ -25,8 +25,8 @@ public class TodoController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    TodoResponse create(@RequestBody Todo todo) {
-        return todoService.create(todo);
+    TodoResponse create(@RequestBody TodoRequest todoRequest) {
+        return todoService.create(todoRequest);
     }
 
     @GetMapping("/{id}")
@@ -35,8 +35,8 @@ public class TodoController {
     }
 
     @PutMapping("/{id}")
-    TodoResponse update(@PathVariable String id, @RequestBody Todo todo) {
-        return todoService.update(id, todo);
+    TodoResponse update(@PathVariable String id, @RequestBody TodoRequest todoRequest) {
+        return todoService.update(id, todoRequest);
     }
 
     @DeleteMapping("/{id}")

@@ -3,6 +3,7 @@ package org.todo.todo.service;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+import org.todo.todo.dto.TodoRequest;
 import org.todo.todo.dto.TodoResponse;
 import org.todo.todo.dto.mapper.TodoMapper;
 import org.todo.todo.entity.Todo;
@@ -22,7 +23,8 @@ public class TodoService {
         return TodoMapper.toResponseList(todoRepository.findAll());
     }
 
-    public TodoResponse create(Todo todo) {
+    public TodoResponse create(TodoRequest todoRequest) {
+        Todo todo = TodoMapper.toEntity(todoRequest);
         if (todo.getText() == null || todo.getText().isEmpty()) {
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Todo text cannot be empty");
         }
@@ -30,7 +32,8 @@ public class TodoService {
         return TodoMapper.toResponse(todoRepository.save(todo));
     }
 
-    public TodoResponse update(String id, Todo todo) {
+    public TodoResponse update(String id, TodoRequest todoRequest) {
+        Todo todo = TodoMapper.toEntity(todoRequest);
         if (todo.getText() != null && todo.getText().isEmpty()) {
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Todo text cannot be empty");
         }
