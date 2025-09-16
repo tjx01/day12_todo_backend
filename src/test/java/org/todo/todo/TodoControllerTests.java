@@ -158,4 +158,18 @@ public class TodoControllerTests {
                 .andExpect(jsonPath("$.text").value("Buy banana"))
                 .andExpect(jsonPath("$.done").value(true));
     }
+
+    @Test
+    void should_response_404_when_update_todo_id_not_exist() throws Exception {
+        MockHttpServletRequestBuilder request = put("/todos/123")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
+                        {
+                            "text": "Buy bread",
+                            "done": true
+                        }
+                        """);
+        mockMvc.perform(request)
+                .andExpect(status().isNotFound());
+    }
 }
