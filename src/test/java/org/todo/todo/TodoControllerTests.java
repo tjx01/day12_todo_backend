@@ -12,8 +12,7 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import org.todo.todo.entity.Todo;
 import org.todo.todo.repository.TodoRepository;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -119,6 +118,25 @@ public class TodoControllerTests {
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").exists())
                 .andExpect(jsonPath("$.id").value(Matchers.not("client-sent-id")));
+    }
+
+    @Test
+    void should_response_new_todo_when_update_todo() throws Exception {
+        Todo todo = todoRepository.save(new Todo(null, "Buy milk", false));
+
+        MockHttpServletRequestBuilder request = put("/todos/" + todo.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
+                        {
+                            "text": "Buy bread",
+                            "done": true
+                        }
+                        """);
+        mockMvc.perform(request)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").exists())
+                .andExpect(jsonPath("$.text").value("Buy bread"))
+                .andExpect(jsonPath("$.done").value(true));
     }
 
 }
