@@ -36,6 +36,8 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    implementation 'org.springframework.ai:spring-ai-starter-mcp-server:1.0.2'
+    implementation 'org.springframework.ai:spring-ai-starter-mcp-server-webmvc:1.0.2'
 }
 
 tasks.named('test') {
